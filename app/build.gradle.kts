@@ -76,6 +76,8 @@ dependencies {
     //viewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
 
     //Hilt
     implementation("com.google.dagger:hilt-android:2.49")
@@ -102,6 +104,9 @@ dependencies {
 
     //Lottie
     implementation("com.airbnb.android:lottie-compose:6.2.0")
+
+    //Google location services
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
 
 }
