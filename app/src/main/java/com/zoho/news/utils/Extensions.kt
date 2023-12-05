@@ -1,5 +1,6 @@
 package com.zoho.news.utils
 
+import androidx.compose.ui.graphics.Color
 import com.zoho.news.domain.AirQuality
 
 fun AirQuality.toProgressData(): List<Pair<String, Float>> {
@@ -49,10 +50,8 @@ fun AirQuality.toProgressData(): List<Pair<String, Float>> {
         in 12400.0..15400.0 -> 4f
         else -> 5f
     }
-    val nh3Range = if (nh3 in 0.1..200.0) 1f
-    else 2f
-    val noRange = if (no in 0.1..100.0) 1f
-    else 2f
+    val nh3Range = if (nh3 in 0.1..200.0) 1f else 2f
+    val noRange = if (no in 0.1..100.0) 1f else 2f
     return listOf(
         Pair("so2", so2Range),
         Pair("no2", no2Range),
@@ -63,4 +62,14 @@ fun AirQuality.toProgressData(): List<Pair<String, Float>> {
         Pair("nh3", nh3Range),
         Pair("no", noRange),
     )
+}
+
+fun List<Pair<String, Float>>.getReadableText(): Pair<String, Color> {
+    return when {
+        all { it.second == 1f } -> Pair("Good", Color.Green)
+        all { it.second == 2f } || any { it.second == 2f } -> Pair("Fair", Color.Yellow)
+        all { it.second == 3f } || any { it.second == 3f } -> Pair("Moderate", Color(0xFFFFA500))
+        all { it.second == 4f } || any { it.second == 4f } -> Pair("Poor", Color.Red)
+        else -> Pair("Very Poor", Color(0xFF8B0000))
+    }
 }

@@ -1,77 +1,99 @@
 package com.zoho.news.screens.news.airQuality
 
 import QualityLevelIndicator
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.zoho.news.domain.AirQuality
 import com.zoho.news.remote.state.LoadingState
+import com.zoho.news.utils.getReadableText
 import com.zoho.news.utils.toProgressData
+import com.zoho.weatherapp.R
 
 @Composable
 fun AirQualityData(
     modifier: Modifier = Modifier,
-    airViewModel: AirQualityViewModel,
-    hitAirQualityData: () -> Unit
+    airViewModel: AirQualityViewModel
 ) {
     val airQualityData by airViewModel.airQuality.observeAsState(initial = LoadingState.Loading)
+    val airQualityRange = remember {
+        mutableStateOf("")
+    }
+    val airQualityColor = remember {
+        mutableStateOf(Color.Black)
+    }
 
     Row(modifier = modifier) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(3.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Column(modifier) {
+            val text = AnnotatedString.Builder()
+            text.apply {
+                append("Air Pollution at your location ")
+                pushStyle(SpanStyle(fontWeight = FontWeight.Bold, color = airQualityColor.value))
+                append(airQualityRange.value)
+                pop()
+            }
             Text(
-                text = "Air Pollution at your location",
-                modifier = modifier.padding(bottom = 3.dp)
+                text = text.toAnnotatedString(),
+                style = TextStyle(fontSize = 16.sp),
+                modifier = modifier
+                    .weight(3f)
+                    .padding(top = 3.dp)
+                    .align(Alignment.CenterHorizontally)
             )
             when (airQualityData) {
                 is LoadingState.Loading -> {
-                    CircularProgressIndicator()
+                    Text(
+                        text = stringResource(R.string.no_data_found),
+                        modifier
+                            .weight(3f)
+                            .align(Alignment.CenterHorizontally),
+                        style = TextStyle(fontSize = 13.sp)
+                    )
                 }
 
                 is LoadingState.Success -> {
                     val progressData =
                         (airQualityData as LoadingState.Success<AirQuality>).data.toProgressData()
+                    val progressUpdatedValue = progressData.getReadableText()
+                    airQualityRange.value = progressUpdatedValue.first
+                    airQualityColor.value = progressUpdatedValue.second
                     LazyRow {
                         items(progressData.size) {
-                            QualityLevelIndicator(progressData[it])
+                            QualityLevelIndicator(
+                                progressData[it],
+                                modifier.weight(3f)
+                            )
                         }
                     }
                 }
 
                 is LoadingState.Error -> {
-                    Text(text = "Unable to fetch data, Please try again later.")
+                    Text(
+                        text = stringResource(R.string.unable_to_fetch_data_please_try_again_later),
+                        style = TextStyle(fontSize = 13.sp),
+                        modifier = modifier
+                            .weight(3f)
+                            .align(Alignment.CenterHorizontally)
+                    )
                 }
             }
-        }
-        Spacer(modifier = modifier.fillMaxWidth())
-        IconButton(
-            onClick = { hitAirQualityData() },
-            modifier.align(Alignment.CenterVertically)
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Refresh,
-                contentDescription = "Refresh",
-                modifier = modifier.size(15.dp)
-            )
         }
     }
 }

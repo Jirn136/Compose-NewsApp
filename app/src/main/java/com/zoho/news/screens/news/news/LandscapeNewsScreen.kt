@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,19 +23,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieConstants
 import com.zoho.news.commons.CustomCard
 import com.zoho.news.domain.News
+import com.zoho.news.screens.news.airQuality.AirQualityScreen
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -47,8 +41,7 @@ fun LandscapeNewsScreen(
     searchText: String,
     newsList: Flow<PagingData<News>>,
     visible: MutableState<Boolean>,
-    focusManager: FocusManager,
-    composition: LottieComposition?
+    focusManager: FocusManager
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Row(
@@ -66,23 +59,7 @@ fun LandscapeNewsScreen(
                     .height(100.dp)
                     .padding(top = 10.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    LottieAnimation(
-                        composition = composition,
-                        iterations = LottieConstants.IterateForever,
-                        modifier = Modifier
-                            .size(150.dp)
-                    )
-
-                    Text(
-                        text = "Check air pollution on your area", style = TextStyle(
-                            fontSize = 16.sp, color = Color.Gray
-                        )
-                    )
-                }
-
+                AirQualityScreen(modifier = Modifier)
             }
             OutlinedTextField(
                 modifier = Modifier

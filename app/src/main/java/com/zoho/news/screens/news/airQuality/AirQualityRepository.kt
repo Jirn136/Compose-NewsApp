@@ -10,7 +10,7 @@ class AirQualityRepository @Inject constructor(
     private val airQualityApi: AirQualityApi
 ) {
     suspend fun getAirQualityApi(lat: String, long: String): LoadingState<AirQuality> {
-        val apiRequest = airQualityApi.getAirQuality(latitude = lat, longitude = long).await()
+        val apiRequest = airQualityApi.getAirQuality(latitude = lat, longitude = long)
         return if (apiRequest.isSuccessful) {
             apiRequest.body()?.let {
                 LoadingState.Success(it.toAirQuality())

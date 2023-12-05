@@ -8,9 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieComposition
-import com.zoho.news.R
 
 @Composable
 fun NewsScreen(
@@ -25,7 +22,6 @@ fun NewsScreen(
     }
 
     val focusManager = LocalFocusManager.current
-    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.pollution))
 
     val configuration = LocalConfiguration.current
     if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -35,13 +31,12 @@ fun NewsScreen(
             searchText,
             newsList,
             visible,
-            focusManager,
-            composition
+            focusManager
         )
     } else {
         LandscapeNewsScreen(
             newsViewModel,
-            clickedNews, searchText, newsList, visible, focusManager, composition
+            clickedNews, searchText, newsList, visible, focusManager
         )
     }
 

@@ -2,11 +2,9 @@ package com.zoho.news.screens.news.news
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,9 +27,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieConstants
 import com.zoho.news.commons.CustomCard
 import com.zoho.news.domain.News
 import com.zoho.news.screens.news.airQuality.AirQualityScreen
@@ -45,8 +40,7 @@ fun PortraitNewsScreen(
     searchText: String,
     newsList: Flow<PagingData<News>>,
     visible: MutableState<Boolean>,
-    focusManager: FocusManager,
-    composition: LottieComposition?
+    focusManager: FocusManager
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
@@ -59,20 +53,7 @@ fun PortraitNewsScreen(
                 .height(100.dp)
                 .padding(top = 10.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                LottieAnimation(
-                    composition = composition,
-                    iterations = LottieConstants.IterateForever,
-                    modifier = Modifier
-                        .size(150.dp)
-                        .weight(3f)
-                )
-
-                AirQualityScreen(modifier = Modifier.weight(6f))
-            }
-
+            AirQualityScreen(modifier = Modifier)
         }
         OutlinedTextField(
             modifier = Modifier

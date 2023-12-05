@@ -47,9 +47,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import com.zoho.news.R
 import com.zoho.news.commons.CustomCard
 import com.zoho.news.domain.News
+import com.zoho.weatherapp.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -152,7 +152,7 @@ fun NewsItem(
         ) {
             Box {
                 SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(context).data(news.imageUrl).crossfade(1500)
+                    model = ImageRequest.Builder(context).data(news.imageUrl).crossfade(500)
                         .build(),
                     contentDescription = news.title,
                     contentScale = ContentScale.Crop,
