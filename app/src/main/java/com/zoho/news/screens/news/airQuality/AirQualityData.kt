@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -63,12 +64,18 @@ fun AirQualityData(
             )
             when (airQualityData) {
                 is LoadingState.Loading -> {
-                    Text(
-                        text = stringResource(R.string.no_data_found),
+                    if (airQualityRange.value.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.no_data_found),
+                            modifier
+                                .weight(3f)
+                                .align(Alignment.CenterHorizontally),
+                            style = TextStyle(fontSize = 13.sp)
+                        )
+                    } else CircularProgressIndicator(
                         modifier
                             .weight(3f)
-                            .align(Alignment.CenterHorizontally),
-                        style = TextStyle(fontSize = 13.sp)
+                            .align(Alignment.CenterHorizontally)
                     )
                 }
 

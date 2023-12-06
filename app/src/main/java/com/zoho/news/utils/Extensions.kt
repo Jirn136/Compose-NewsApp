@@ -17,7 +17,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-fun AirQuality.toProgressData(context: Context): List<Pair<String, Float>> {
+fun AirQuality.toProgressData(context: Context): List<Triple<String, Float, Double>> {
     val so2Range = when (so2) {
         in 0.0..20.0 -> 1f
         in 20.0..80.0 -> 2f
@@ -67,18 +67,18 @@ fun AirQuality.toProgressData(context: Context): List<Pair<String, Float>> {
     val nh3Range = if (nh3 in 0.1..200.0) 1f else 2f
     val noRange = if (no in 0.1..100.0) 1f else 2f
     return listOf(
-        Pair(context.getString(R.string.so2), so2Range),
-        Pair(context.getString(R.string.no2), no2Range),
-        Pair(context.getString(R.string.pm10), pm10Range),
-        Pair(context.getString(R.string.pm25), pm25Range),
-        Pair(context.getString(R.string.o3), o3Range),
-        Pair(context.getString(R.string.co), coRange),
-        Pair(context.getString(R.string.nh3), nh3Range),
-        Pair(context.getString(R.string.no), noRange),
+        Triple(context.getString(R.string.so2), so2Range, so2),
+        Triple(context.getString(R.string.no2), no2Range, no2),
+        Triple(context.getString(R.string.pm10), pm10Range, pm10),
+        Triple(context.getString(R.string.pm25), pm25Range, pm25),
+        Triple(context.getString(R.string.o3), o3Range, o3),
+        Triple(context.getString(R.string.co), coRange, co),
+        Triple(context.getString(R.string.nh3), nh3Range, nh3),
+        Triple(context.getString(R.string.no), noRange, no),
     )
 }
 
-fun List<Pair<String, Float>>.getReadableText(context: Context): Pair<String, Color> {
+fun List<Triple<String, Float, Double>>.getReadableText(context: Context): Pair<String, Color> {
     return when {
         all { it.second == 1f } -> Pair(context.getString(R.string.good), Color.Green)
         all { it.second == 2f } || any { it.second == 2f } -> Pair(

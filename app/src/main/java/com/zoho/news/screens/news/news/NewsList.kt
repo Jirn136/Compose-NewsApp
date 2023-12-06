@@ -59,7 +59,7 @@ import com.zoho.weatherapp.R
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NewsList(
-    news: LazyPagingItems<News>, clickedNews: (String) -> Unit
+    news: LazyPagingItems<News>, clickedNews: (String) -> Unit, isLandScape: Boolean = false
 ) {
     val context = LocalContext.current
     LaunchedEffect(key1 = news.loadState) {
@@ -87,7 +87,7 @@ fun NewsList(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = 10.dp),
-                verticalAlignment = Alignment.Bottom,
+                verticalAlignment = if (isLandScape) Alignment.Top else Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 state = lazyListState,
                 flingBehavior = flingBehavior
@@ -99,7 +99,7 @@ fun NewsList(
                             state = lazyListState,
                             index = it,
                             context = context,
-                            clickedNews = clickedNews
+                            clickedNews = clickedNews, isLandscape = isLandScape
                         )
                     }
                 }
@@ -141,7 +141,8 @@ fun NewsItem(
     state: LazyListState,
     index: Int,
     context: Context,
-    clickedNews: (String) -> Unit
+    clickedNews: (String) -> Unit,
+    isLandscape: Boolean
 ) {
     val scale by remember {
         derivedStateOf {
@@ -167,6 +168,7 @@ fun NewsItem(
             style = TextStyle(fontSize = 16.sp, textDecoration = TextDecoration.Underline)
         )
         CustomCard(
+            isLandScape = isLandscape,
             modifier = modifier
                 .clickable {
                     clickedNews(news.url.toString())
@@ -229,7 +231,7 @@ fun NewsItem(
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(fontSize = 16.sp),
-                maxLines = 3,
+                maxLines = if (isLandscape) 1 else 3,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(5.dp)
             )
@@ -253,8 +255,8 @@ fun NewsItem(
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(fontSize = 13.sp, textDecoration = TextDecoration.Underline),
                     modifier = Modifier
-                        .weight(2f)
-                        .padding(top = 3.dp)
+                        .weight(if (isLandscape) 4f else 2f)
+                        .padding(end = 3.dp)
                 )
             }
         }

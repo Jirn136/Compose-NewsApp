@@ -59,7 +59,7 @@ fun LandscapeNewsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(100.dp)
-                    .padding(top = 10.dp)
+                    .padding(top = 5.dp)
             ) {
                 AirQualityScreen(modifier = Modifier)
             }
@@ -112,7 +112,11 @@ fun LandscapeNewsScreen(
             )
         }
 
-        NewsList(news = newsList.collectAsLazyPagingItems(), clickedNews = clickedNews)
+        NewsList(
+            news = newsList.collectAsLazyPagingItems(),
+            clickedNews = clickedNews,
+            isLandScape = true
+        )
     }
 
 }

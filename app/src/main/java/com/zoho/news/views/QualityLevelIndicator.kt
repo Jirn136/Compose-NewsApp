@@ -2,6 +2,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -17,7 +18,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun QualityLevelIndicator(pair: Pair<String, Float>, modifier: Modifier = Modifier) {
+fun QualityLevelIndicator(triple: Triple<String, Float, Double>, modifier: Modifier = Modifier) {
     val animateFloat = remember {
         Animatable(initialValue = 0f)
     }
@@ -27,12 +28,16 @@ fun QualityLevelIndicator(pair: Pair<String, Float>, modifier: Modifier = Modifi
             animationSpec = tween(durationMillis = 1000, easing = LinearEasing)
         )
     }
-    val element = pair.first.uppercase()
-    val qualityRange = pair.second
+    val element = triple.first.uppercase()
+    val qualityRange = triple.second
+    val level = triple.third
 
     Box(
         modifier = modifier
             .size(60.dp)
+            .clickable {
+
+            }
     ) {
         val color = when (qualityRange) {
             1f -> Color.Green

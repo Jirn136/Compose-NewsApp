@@ -53,7 +53,7 @@ fun PortraitNewsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
-                .padding(top = 10.dp)
+                .padding(top = 3.dp)
         ) {
             AirQualityScreen(modifier = Modifier.align(Alignment.CenterHorizontally))
         }
