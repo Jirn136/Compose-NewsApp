@@ -17,9 +17,9 @@ fun NavGraph(navController: NavHostController) {
     val newsViewModel = hiltViewModel<NewsViewModel>()
     NavHost(
         navController = navController,
-        startDestination = RouteScreen.NavScreen.route
+        startDestination = RouteScreen.NewsScreen.route
     ) {
-        composable(route = RouteScreen.NavScreen.route) {
+        composable(route = RouteScreen.NewsScreen.route) {
             NewsScreen(newsViewModel) { clickedItem ->
                 val encodedUrl = URLEncoder.encode(clickedItem, StandardCharsets.UTF_8.toString())
                 navController.navigate(route = RouteScreen.WebScreen.route.plus("/$encodedUrl"))

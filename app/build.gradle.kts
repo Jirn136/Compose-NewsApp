@@ -102,11 +102,11 @@ dependencies {
     //Navigation
     implementation("androidx.navigation:navigation-compose:2.7.5")
 
-    //Lottie
-    implementation("com.airbnb.android:lottie-compose:6.2.0")
-
     //Google location services
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    //permission
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
 
 
 }

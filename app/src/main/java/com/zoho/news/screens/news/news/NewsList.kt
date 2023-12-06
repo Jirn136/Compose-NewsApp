@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -107,8 +108,24 @@ fun NewsList(
                         )
                     }
                 }
+                if (news.itemSnapshotList.isEmpty())
+                    item {
+                        EmptyView()
+                    }
+
             }
         }
+    }
+}
+
+@Composable
+fun EmptyView() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            stringResource(id = R.string.no_data_found),
+            modifier = Modifier.align(Alignment.Center),
+            style = TextStyle(fontSize = 16.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+        )
     }
 }
 

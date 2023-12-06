@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
@@ -30,6 +31,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.zoho.news.commons.CustomCard
 import com.zoho.news.domain.News
 import com.zoho.news.screens.news.airQuality.AirQualityScreen
+import com.zoho.weatherapp.R
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -53,7 +55,7 @@ fun PortraitNewsScreen(
                 .height(100.dp)
                 .padding(top = 10.dp)
         ) {
-            AirQualityScreen(modifier = Modifier)
+            AirQualityScreen(modifier = Modifier.align(Alignment.CenterHorizontally))
         }
         OutlinedTextField(
             modifier = Modifier
@@ -71,13 +73,13 @@ fun PortraitNewsScreen(
             keyboardActions = KeyboardActions(onSearch = {
                 keyboardController?.hide()
                 focusManager.clearFocus(true)
+                newsViewModel.searchNews(searchText)
             }),
             onValueChange = {
-                newsViewModel.searchNews(it)
                 visible.value = it.isNotEmpty()
             },
             placeholder = {
-                Text(text = "Search...")
+                Text(text = stringResource(id = R.string.search))
             },
             trailingIcon = {
                 IconButton(onClick = {

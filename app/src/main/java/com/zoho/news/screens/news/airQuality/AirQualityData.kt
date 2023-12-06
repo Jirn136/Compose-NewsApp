@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoho.news.domain.AirQuality
 import com.zoho.news.remote.state.LoadingState
+import com.zoho.news.utils.Constants
 import com.zoho.news.utils.getReadableText
 import com.zoho.news.utils.toProgressData
 import com.zoho.weatherapp.R
@@ -34,17 +36,19 @@ fun AirQualityData(
 ) {
     val airQualityData by airViewModel.airQuality.observeAsState(initial = LoadingState.Loading)
     val airQualityRange = remember {
-        mutableStateOf("")
+        mutableStateOf(Constants.EMPTY_STRING)
     }
     val airQualityColor = remember {
         mutableStateOf(Color.Black)
     }
+    val context = LocalContext.current
 
     Row(modifier = modifier) {
         Column(modifier) {
             val text = AnnotatedString.Builder()
             text.apply {
-                append("Air Pollution at your location ")
+                pushStyle(SpanStyle(fontWeight = FontWeight.Medium, color = Color.Black))
+                append(stringResource(R.string.air_quality_at_your_location))
                 pushStyle(SpanStyle(fontWeight = FontWeight.Bold, color = airQualityColor.value))
                 append(airQualityRange.value)
                 pop()
@@ -54,7 +58,7 @@ fun AirQualityData(
                 style = TextStyle(fontSize = 16.sp),
                 modifier = modifier
                     .weight(3f)
-                    .padding(top = 3.dp)
+                    .padding(top = 3.dp, start = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
             when (airQualityData) {
@@ -70,8 +74,12 @@ fun AirQualityData(
 
                 is LoadingState.Success -> {
                     val progressData =
-                        (airQualityData as LoadingState.Success<AirQuality>).data.toProgressData()
-                    val progressUpdatedValue = progressData.getReadableText()
+                        (airQualityData as LoadingState.Success<AirQuality>).data.toProgressData(
+                            context = context
+                        )
+                    val progressUpdatedValue = progressData.getReadableText(context = context)
+                    if (airQualityRange.value.isNotEmpty()) airQualityRange.value =
+                        Constants.EMPTY_STRING
                     airQualityRange.value = progressUpdatedValue.first
                     airQualityColor.value = progressUpdatedValue.second
                     LazyRow {

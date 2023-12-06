@@ -1,7 +1,12 @@
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -9,11 +14,19 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun QualityLevelIndicator(pair: Pair<String, Float>, modifier: Modifier = Modifier) {
+    val animateFloat = remember {
+        Animatable(initialValue = 0f)
+    }
+    LaunchedEffect(animateFloat) {
+        animateFloat.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = 1000, easing = LinearEasing)
+        )
+    }
     val element = pair.first.uppercase()
     val qualityRange = pair.second
 
@@ -41,7 +54,7 @@ fun QualityLevelIndicator(pair: Pair<String, Float>, modifier: Modifier = Modifi
                 drawCircle(
                     color = color,
                     center = Offset(centerX, centerY),
-                    radius = radius,
+                    radius = radius * animateFloat.value,
                     style = Stroke(strokeWidth)
                 )
 
@@ -66,12 +79,4 @@ fun QualityLevelIndicator(pair: Pair<String, Float>, modifier: Modifier = Modifi
         )
     }
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewCircularLevelProgressbar() {
-    QualityLevelIndicator(
-        Pair("so2", 3f), modifier = Modifier
-    )
 }

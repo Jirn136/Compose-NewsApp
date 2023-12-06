@@ -9,6 +9,7 @@ import androidx.paging.map
 import com.zoho.news.database.NewsDatabase
 import com.zoho.news.database.NewsEntity
 import com.zoho.news.remote.mappers.toNews
+import com.zoho.news.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,14 +31,14 @@ class NewsViewModel @Inject constructor(
         data.map { it.toNews() }
     }.cachedIn(viewModelScope)
 
-    private val _searchText = MutableStateFlow("")
+    private val _searchText = MutableStateFlow(Constants.EMPTY_STRING)
     val searchText = _searchText.asStateFlow()
 
     private val _news = MutableStateFlow(newsPagingFlow)
     val news = _searchText.debounce(1000L).combine(_news) { text, _ ->
         if (text.isBlank()) newsPagingFlow
         else {
-            Pager(PagingConfig(20)) {
+            Pager(PagingConfig(Constants.DEFAULT_PAGE_SIZE)) {
                 newsDb.dao.getAllNews(text)
             }.flow.map { data ->
                 data.map { it.toNews() }
@@ -50,7 +51,7 @@ class NewsViewModel @Inject constructor(
     }
 
     fun clearSearchText() {
-        _searchText.value = ""
+        _searchText.value = Constants.EMPTY_STRING
     }
 
 }

@@ -21,6 +21,7 @@ class AirQualityViewModel @Inject constructor(
     fun getAirQuality(lat: String, long: String) {
         viewModelScope.launch {
             _airQuality.apply {
+                value = LoadingState.Loading
                 value = airQualityRepository.getAirQualityApi(lat, long)
             }
         }

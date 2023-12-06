@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
@@ -31,6 +32,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.zoho.news.commons.CustomCard
 import com.zoho.news.domain.News
 import com.zoho.news.screens.news.airQuality.AirQualityScreen
+import com.zoho.weatherapp.R
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -75,15 +77,15 @@ fun LandscapeNewsScreen(
                 value = searchText,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
+                    newsViewModel.searchNews(searchText)
                     keyboardController?.hide()
                     focusManager.clearFocus(true)
                 }),
                 onValueChange = {
-                    newsViewModel.searchNews(it)
                     visible.value = it.isNotEmpty()
                 },
                 placeholder = {
-                    Text(text = "Search...")
+                    Text(text = stringResource(R.string.search))
                 },
                 trailingIcon = {
                     IconButton(onClick = {
@@ -92,14 +94,18 @@ fun LandscapeNewsScreen(
                     }) {
                         if (visible.value) {
                             Icon(
-                                imageVector = Icons.Rounded.Clear, contentDescription = "Clear"
+                                imageVector = Icons.Rounded.Clear,
+                                contentDescription = stringResource(
+                                    R.string.clear
+                                )
                             )
                         }
                     }
                 },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Rounded.Search, contentDescription = "Search"
+                        imageVector = Icons.Rounded.Search,
+                        contentDescription = stringResource(R.string.search)
                     )
                 },
                 shape = RoundedCornerShape(25.dp),

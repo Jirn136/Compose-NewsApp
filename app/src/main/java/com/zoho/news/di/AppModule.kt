@@ -10,6 +10,7 @@ import com.zoho.news.database.NewsEntity
 import com.zoho.news.remote.NewsRemoteMediator
 import com.zoho.news.remote.api.AirQualityApi
 import com.zoho.news.remote.api.NewsApi
+import com.zoho.news.utils.Constants.DEFAULT_PAGE_SIZE
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,7 +54,7 @@ object AppModule {
     @Singleton
     fun provideNewsPager(newsDb: NewsDatabase, newsApi: NewsApi): Pager<Int, NewsEntity> {
         return Pager(
-            config = PagingConfig(pageSize = 20),
+            config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE),
             remoteMediator = NewsRemoteMediator(
                 newsDb = newsDb, newsApi = newsApi
             ), pagingSourceFactory = {

@@ -1,9 +1,14 @@
 package com.zoho.news.utils
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.widget.Toast
 import androidx.compose.ui.graphics.Color
 import com.zoho.news.domain.AirQuality
+import com.zoho.weatherapp.R
 
-fun AirQuality.toProgressData(): List<Pair<String, Float>> {
+fun AirQuality.toProgressData(context: Context): List<Pair<String, Float>> {
     val so2Range = when (so2) {
         in 0.0..20.0 -> 1f
         in 20.0..80.0 -> 2f
@@ -53,23 +58,54 @@ fun AirQuality.toProgressData(): List<Pair<String, Float>> {
     val nh3Range = if (nh3 in 0.1..200.0) 1f else 2f
     val noRange = if (no in 0.1..100.0) 1f else 2f
     return listOf(
-        Pair("so2", so2Range),
-        Pair("no2", no2Range),
-        Pair("pm10", pm10Range),
-        Pair("pm25", pm25Range),
-        Pair("o3", o3Range),
-        Pair("co", coRange),
-        Pair("nh3", nh3Range),
-        Pair("no", noRange),
+        Pair(context.getString(R.string.so2), so2Range),
+        Pair(context.getString(R.string.no2), no2Range),
+        Pair(context.getString(R.string.pm10), pm10Range),
+        Pair(context.getString(R.string.pm25), pm25Range),
+        Pair(context.getString(R.string.o3), o3Range),
+        Pair(context.getString(R.string.co), coRange),
+        Pair(context.getString(R.string.nh3), nh3Range),
+        Pair(context.getString(R.string.no), noRange),
     )
 }
 
-fun List<Pair<String, Float>>.getReadableText(): Pair<String, Color> {
+fun List<Pair<String, Float>>.getReadableText(context: Context): Pair<String, Color> {
     return when {
-        all { it.second == 1f } -> Pair("Good", Color.Green)
-        all { it.second == 2f } || any { it.second == 2f } -> Pair("Fair", Color.Yellow)
-        all { it.second == 3f } || any { it.second == 3f } -> Pair("Moderate", Color(0xFFFFA500))
-        all { it.second == 4f } || any { it.second == 4f } -> Pair("Poor", Color.Red)
-        else -> Pair("Very Poor", Color(0xFF8B0000))
+        all { it.second == 1f } -> Pair(context.getString(R.string.good), Color.Green)
+        all { it.second == 2f } || any { it.second == 2f } -> Pair(
+            context.getString(R.string.fair),
+            Color.Yellow
+        )
+
+        all { it.second == 3f } || any { it.second == 3f } -> Pair(
+            context.getString(R.string.moderate),
+            Color(0xFFFFA500)
+        )
+
+        all { it.second == 4f } || any { it.second == 4f } -> Pair(
+            context.getString(R.string.poor),
+            Color.Red
+        )
+
+        else -> Pair(context.getString(R.string.very_poor), Color(0xFF8B0000))
     }
+}
+
+fun String.toToast(context: Context) =
+    Toast.makeText(context, this, Toast.LENGTH_SHORT).show()
+
+fun Context.isNetworkAvailable(): Boolean {
+    val isAvailable: Boolean
+    val connectivityManager =
+        this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkCapabilities = connectivityManager.activeNetwork ?: return false
+    val activeConnection =
+        connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+    isAvailable = when {
+        activeConnection.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+        activeConnection.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+        activeConnection.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+        else -> false
+    }
+    return isAvailable
 }
