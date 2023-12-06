@@ -1,12 +1,21 @@
 package com.zoho.news.utils
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.ui.graphics.Color
 import com.zoho.news.domain.AirQuality
 import com.zoho.weatherapp.R
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 fun AirQuality.toProgressData(context: Context): List<Pair<String, Float>> {
     val so2Range = when (so2) {
@@ -108,4 +117,29 @@ fun Context.isNetworkAvailable(): Boolean {
         else -> false
     }
     return isAvailable
+}
+
+fun String.convertReadableTimeStamp(): String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        val dateTime = LocalDateTime.parse(this, formatter)
+        val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        dateTime.format(dateFormatter)
+    } else {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        try {
+            val date = inputFormat.parse(this)
+            date?.let { outputFormat.format(it) } ?: Constants.EMPTY_STRING
+        } catch (e: Exception) {
+            Constants.EMPTY_STRING
+        }
+    }
+}
+
+fun Activity.redirectToSettings() {
+    Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.fromParts("package", packageName, null)
+    ).also(::startActivity)
 }

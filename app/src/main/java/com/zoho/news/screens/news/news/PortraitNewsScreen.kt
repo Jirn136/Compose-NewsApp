@@ -73,9 +73,9 @@ fun PortraitNewsScreen(
             keyboardActions = KeyboardActions(onSearch = {
                 keyboardController?.hide()
                 focusManager.clearFocus(true)
-                newsViewModel.searchNews(searchText)
             }),
             onValueChange = {
+                newsViewModel.searchNews(it)
                 visible.value = it.isNotEmpty()
             },
             placeholder = {

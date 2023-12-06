@@ -10,6 +10,7 @@ import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,19 +51,23 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.zoho.news.commons.CustomCard
 import com.zoho.news.domain.News
+import com.zoho.news.utils.Constants
+import com.zoho.news.utils.convertReadableTimeStamp
+import com.zoho.news.utils.isNetworkAvailable
 import com.zoho.weatherapp.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NewsList(
-    news: LazyPagingItems<News>, clickedNews: (String) -> Unit, modifier: Modifier = Modifier
+    news: LazyPagingItems<News>, clickedNews: (String) -> Unit
 ) {
     val context = LocalContext.current
     LaunchedEffect(key1 = news.loadState) {
         if (news.loadState.refresh is LoadState.Error) {
             Toast.makeText(
                 context,
-                (news.loadState.refresh as LoadState.Error).error.message,
+                if (context.isNetworkAvailable()) (news.loadState.refresh as LoadState.Error).error.message
+                else context.getString(R.string.no_internet),
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -98,21 +103,21 @@ fun NewsList(
                         )
                     }
                 }
-                if (needProgressBar) {
-                    item {
-                        CircularProgressIndicator(
+
+
+                item {
+                    when {
+                        needProgressBar -> CircularProgressIndicator(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .fillMaxWidth()
                                 .wrapContentSize(Alignment.Center)
                         )
-                    }
-                }
-                if (news.itemSnapshotList.isEmpty())
-                    item {
-                        EmptyView()
+
+                        news.itemSnapshotList.isEmpty() -> EmptyView()
                     }
 
+                }
             }
         }
     }
@@ -193,7 +198,7 @@ fun NewsItem(
                                 .fillMaxWidth()
                         )
                     },
-                    modifier = Modifier.fillMaxHeight(0.8f)
+                    modifier = Modifier.fillMaxHeight(0.83f)
                 )
                 Box(
                     modifier = Modifier
@@ -223,22 +228,35 @@ fun NewsItem(
                 text = news.summary.toString(),
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
-                style = TextStyle(fontSize = 20.sp),
+                style = TextStyle(fontSize = 16.sp),
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(5.dp)
             )
-            Text(
-                text = "Read More...",
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(fontSize = 16.sp, textDecoration = TextDecoration.Underline),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .padding(5.dp)
-                    .align(Alignment.End)
-            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = news.publishedAt?.convertReadableTimeStamp() ?: Constants.EMPTY_STRING,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(fontSize = 13.sp),
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(start = 5.dp)
+                        .weight(7f)
+                )
+                Text(
+                    text = stringResource(id = R.string.read_more),
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(fontSize = 13.sp, textDecoration = TextDecoration.Underline),
+                    modifier = Modifier
+                        .weight(2f)
+                        .padding(top = 3.dp)
+                )
+            }
         }
     }
 

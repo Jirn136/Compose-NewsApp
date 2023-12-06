@@ -34,7 +34,7 @@ fun NewsScreen(
         PortraitNewsScreen(
             newsViewModel,
             clickedNews,
-            searchText.trim(),
+            searchText,
             newsList,
             visible,
             focusManager

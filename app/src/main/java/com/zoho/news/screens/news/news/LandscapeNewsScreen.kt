@@ -77,11 +77,11 @@ fun LandscapeNewsScreen(
                 value = searchText,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
-                    newsViewModel.searchNews(searchText)
                     keyboardController?.hide()
                     focusManager.clearFocus(true)
                 }),
                 onValueChange = {
+                    newsViewModel.searchNews(it)
                     visible.value = it.isNotEmpty()
                 },
                 placeholder = {

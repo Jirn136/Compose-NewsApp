@@ -21,4 +21,9 @@
     <string name="nh3">nh3</string>
     <string name="no">no</string>
     <string name="no_internet">No internet connection</string>
+    <string name="read_more">Read More...</string>
+    <string name="permission_for_location">Permission for Location</string>
+    <string name="need_location_permission">"Need location permission for analysing the air quality of your current location "</string>
+    <string name="please_go_to_your_app_settings_to_grant_permission">"Please go to your app settings to grant permission "</string>
+    <string name="in_order_to_check_air_quality_location_permission_is_must">location permission is must</string>
 </resources>
