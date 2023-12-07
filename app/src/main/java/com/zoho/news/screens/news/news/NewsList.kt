@@ -10,7 +10,6 @@ import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,13 +20,19 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -51,10 +56,10 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.zoho.news.commons.CustomCard
 import com.zoho.news.domain.News
-import com.zoho.news.utils.Constants
-import com.zoho.news.utils.convertReadableTimeStamp
 import com.zoho.news.utils.isNetworkAvailable
 import com.zoho.weatherapp.R
+import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -83,40 +88,58 @@ fun NewsList(
             val flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
             val lastItemIndex = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             val needProgressBar = lastItemIndex < news.itemCount - 1
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 10.dp),
-                verticalAlignment = if (isLandScape) Alignment.Top else Alignment.Bottom,
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                state = lazyListState,
-                flingBehavior = flingBehavior
-            ) {
-                items(news.itemCount) {
-                    news[it]?.let { it1 ->
-                        NewsItem(
-                            news = it1,
-                            state = lazyListState,
-                            index = it,
-                            context = context,
-                            clickedNews = clickedNews, isLandscape = isLandScape
+            val firstItemIndex = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.index ?: 0
+            val coroutineScope = rememberCoroutineScope()
+            Column {
+                if (firstItemIndex != 0) {
+                    TextButton(onClick = {
+                        coroutineScope.launch {
+                            lazyListState.animateScrollToItem(index = 0)
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Rounded.KeyboardArrowLeft,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.primary
                         )
+                        Text(text = stringResource(R.string.scroll_to_first))
                     }
                 }
-
-
-                item {
-                    when {
-                        needProgressBar -> CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth()
-                                .wrapContentSize(Alignment.Center)
-                        )
-
-                        news.itemSnapshotList.isEmpty() -> EmptyView()
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 10.dp),
+                    verticalAlignment = if (isLandScape) Alignment.Top else Alignment.Bottom,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    state = lazyListState,
+                    flingBehavior = flingBehavior
+                ) {
+                    items(news.itemCount, key = { news[it]?.id ?: Random.nextInt() }) {
+                        news[it]?.let { it1 ->
+                            NewsItem(
+                                news = it1,
+                                state = lazyListState,
+                                index = it,
+                                context = context,
+                                clickedNews = clickedNews, isLandscape = isLandScape
+                            )
+                        }
                     }
 
+
+                    item {
+                        when {
+                            needProgressBar -> CircularProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .fillMaxWidth()
+                                    .wrapContentSize(Alignment.Center)
+                            )
+
+                            news.itemSnapshotList.isEmpty() -> EmptyView()
+                        }
+
+                    }
                 }
             }
         }
@@ -235,30 +258,15 @@ fun NewsItem(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(5.dp)
             )
-            Row(
-                horizontalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(
-                    text = news.publishedAt?.convertReadableTimeStamp() ?: Constants.EMPTY_STRING,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(fontSize = 13.sp),
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .padding(start = 5.dp)
-                        .weight(7f)
-                )
-                Text(
-                    text = stringResource(id = R.string.read_more),
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(fontSize = 13.sp, textDecoration = TextDecoration.Underline),
-                    modifier = Modifier
-                        .weight(if (isLandscape) 4f else 2f)
-                        .padding(end = 3.dp)
-                )
-            }
+
+            Text(
+                text = stringResource(id = R.string.read_more),
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(fontSize = 13.sp, textDecoration = TextDecoration.Underline),
+                modifier = Modifier
+                    .padding(start = 5.dp)
+            )
         }
     }
 
