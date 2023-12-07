@@ -24,11 +24,13 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.zoho.news.commons.CustomCard
+import com.zoho.news.commons.customFontFamily
 import com.zoho.news.domain.News
 import com.zoho.news.screens.news.airQuality.AirQualityScreen
 import com.zoho.weatherapp.R
@@ -79,7 +81,7 @@ fun PortraitNewsScreen(
                 visible.value = it.isNotEmpty()
             },
             placeholder = {
-                Text(text = stringResource(id = R.string.search))
+                Text(text = stringResource(id = R.string.search), fontFamily = customFontFamily())
             },
             trailingIcon = {
                 IconButton(onClick = {
@@ -99,6 +101,7 @@ fun PortraitNewsScreen(
                 )
             },
             shape = RoundedCornerShape(25.dp),
+            textStyle = TextStyle(fontFamily = customFontFamily())
         )
 
         NewsList(news = newsList.collectAsLazyPagingItems(), clickedNews = clickedNews)

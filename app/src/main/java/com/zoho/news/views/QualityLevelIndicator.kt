@@ -17,7 +17,11 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun QualityLevelIndicator(pair: Pair<String, Float>, modifier: Modifier = Modifier) {
+fun QualityLevelIndicator(
+    pair: Pair<String, Float>,
+    modifier: Modifier = Modifier,
+    onSurface: Color
+) {
     val animateFloat = remember {
         Animatable(initialValue = 0f)
     }
@@ -61,7 +65,7 @@ fun QualityLevelIndicator(pair: Pair<String, Float>, modifier: Modifier = Modifi
                 // Text properties
                 val textPaint = Paint().asFrameworkPaint().apply {
                     textAlign = android.graphics.Paint.Align.CENTER
-                    setColor(Color.Black.toArgb())
+                    setColor(onSurface.toArgb())
                     isAntiAlias = true
                     textSize = 30f
                 }

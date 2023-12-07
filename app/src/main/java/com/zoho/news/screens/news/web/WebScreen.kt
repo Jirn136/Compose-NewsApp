@@ -1,6 +1,7 @@
 package com.zoho.news.screens.news.web
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Build
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -29,6 +30,7 @@ fun WebScreen(decodedUrl: String) {
         }
         AndroidView(factory = {
             WebView(it).apply {
+                setBackgroundColor(Color.TRANSPARENT)
                 settings.apply {
                     javaScriptEnabled = true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

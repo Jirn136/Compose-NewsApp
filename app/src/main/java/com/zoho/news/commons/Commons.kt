@@ -6,7 +6,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.dp
+import com.zoho.weatherapp.R
 
 @Composable
 fun CustomCard(
@@ -27,3 +31,18 @@ fun CustomCard(
         content()
     }
 }
+
+
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
+
+fun customFontFamily(): FontFamily =
+    FontFamily(
+        Font(
+            googleFont = GoogleFont("Roboto Slab"),
+            fontProvider = provider
+        )
+    )

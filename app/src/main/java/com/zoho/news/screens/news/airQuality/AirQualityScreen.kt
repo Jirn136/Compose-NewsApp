@@ -8,6 +8,7 @@ import android.location.LocationManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -82,8 +83,8 @@ fun AirQualityScreen(modifier: Modifier = Modifier) {
         }
     }
 
-    Row {
-        AirQualityData(modifier.weight(0.8f), airViewModel)
+    Row(modifier = modifier.fillMaxWidth()) {
+        AirQualityData(modifier.weight(0.9f), airViewModel)
         IconButton(
             onClick = {
                 if (context.isNetworkAvailable()) {
@@ -99,14 +100,14 @@ fun AirQualityScreen(modifier: Modifier = Modifier) {
             },
             modifier
                 .align(Alignment.CenterVertically)
-                .padding(top = 10.dp)
-                .weight(0.15f)
+                .padding(top = 10.dp, end = 10.dp)
+                .weight(0.1f)
         ) {
             Icon(
                 imageVector = Icons.Rounded.Refresh,
                 contentDescription = "Refresh",
                 modifier = modifier
-                    .size(25.dp)
+                    .size(20.dp)
                     .align(Alignment.CenterVertically)
             )
         }

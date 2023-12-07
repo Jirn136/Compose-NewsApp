@@ -1,7 +1,7 @@
 package com.zoho.news.screens.news.news
 
 import android.content.Context
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -55,8 +55,10 @@ import androidx.paging.compose.LazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.zoho.news.commons.CustomCard
+import com.zoho.news.commons.customFontFamily
 import com.zoho.news.domain.News
 import com.zoho.news.utils.isNetworkAvailable
+import com.zoho.news.utils.toToast
 import com.zoho.weatherapp.R
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -64,17 +66,16 @@ import kotlin.random.Random
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NewsList(
-    news: LazyPagingItems<News>, clickedNews: (String) -> Unit, isLandScape: Boolean = false
+    news: LazyPagingItems<News>,
+    clickedNews: (String) -> Unit,
+    isLandScape: Boolean = false
 ) {
     val context = LocalContext.current
     LaunchedEffect(key1 = news.loadState) {
         if (news.loadState.refresh is LoadState.Error) {
-            Toast.makeText(
-                context,
-                if (context.isNetworkAvailable()) (news.loadState.refresh as LoadState.Error).error.message
-                else context.getString(R.string.no_internet),
-                Toast.LENGTH_SHORT
-            ).show()
+            Log.i("TAG", "NewsList: ${(news.loadState.refresh as LoadState.Error).error.message}")
+        } else if (!context.isNetworkAvailable()) {
+            context.getString(R.string.no_internet).toToast(context)
         }
     }
 
@@ -102,7 +103,10 @@ fun NewsList(
                             contentDescription = "Back",
                             tint = MaterialTheme.colorScheme.primary
                         )
-                        Text(text = stringResource(R.string.scroll_to_first))
+                        Text(
+                            text = stringResource(R.string.scroll_to_first),
+                            fontFamily = customFontFamily()
+                        )
                     }
                 }
                 LazyRow(
@@ -148,12 +152,17 @@ fun NewsList(
 
 @Composable
 fun EmptyView() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text(
-            stringResource(id = R.string.no_data_found),
-            modifier = Modifier.align(Alignment.Center),
-            style = TextStyle(fontSize = 16.sp, color = Color.Black, fontWeight = FontWeight.Bold)
-        )
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(modifier = Modifier.align(Alignment.Center)) {
+            Text(
+                stringResource(id = R.string.no_data_found),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = customFontFamily()
+                )
+            )
+        }
     }
 }
 
@@ -188,7 +197,11 @@ fun NewsItem(
         Text(
             text = news.newsSite.toString(),
             modifier = Modifier.padding(start = 10.dp),
-            style = TextStyle(fontSize = 16.sp, textDecoration = TextDecoration.Underline)
+            style = TextStyle(
+                fontSize = 16.sp,
+                textDecoration = TextDecoration.Underline,
+                fontFamily = customFontFamily()
+            )
         )
         CustomCard(
             isLandScape = isLandscape,
@@ -241,7 +254,7 @@ fun NewsItem(
                         text = news.title.toString(),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        style = TextStyle(fontSize = 26.sp),
+                        style = TextStyle(fontSize = 20.sp, fontFamily = customFontFamily()),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(5.dp)
@@ -251,9 +264,11 @@ fun NewsItem(
             }
             Text(
                 text = news.summary.toString(),
-                color = Color.Black,
                 fontWeight = FontWeight.Bold,
-                style = TextStyle(fontSize = 16.sp),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontFamily = customFontFamily()
+                ),
                 maxLines = if (isLandscape) 1 else 3,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(5.dp)
@@ -261,8 +276,8 @@ fun NewsItem(
 
             Text(
                 text = stringResource(id = R.string.read_more),
-                color = Color.Black,
                 fontWeight = FontWeight.Bold,
+                fontFamily = customFontFamily(),
                 style = TextStyle(fontSize = 13.sp, textDecoration = TextDecoration.Underline),
                 modifier = Modifier
                     .padding(start = 5.dp)

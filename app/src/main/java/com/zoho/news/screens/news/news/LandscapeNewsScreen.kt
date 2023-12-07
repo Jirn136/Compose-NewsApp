@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.zoho.news.commons.CustomCard
+import com.zoho.news.commons.customFontFamily
 import com.zoho.news.domain.News
 import com.zoho.news.screens.news.airQuality.AirQualityScreen
 import com.zoho.weatherapp.R
@@ -85,7 +86,7 @@ fun LandscapeNewsScreen(
                     visible.value = it.isNotEmpty()
                 },
                 placeholder = {
-                    Text(text = stringResource(R.string.search))
+                    Text(text = stringResource(R.string.search), fontFamily = customFontFamily())
                 },
                 trailingIcon = {
                     IconButton(onClick = {

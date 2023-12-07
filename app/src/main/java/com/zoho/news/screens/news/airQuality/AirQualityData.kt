@@ -4,8 +4,10 @@ import QualityLevelIndicator
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zoho.news.commons.customFontFamily
 import com.zoho.news.domain.AirQuality
 import com.zoho.news.remote.state.LoadingState
 import com.zoho.news.utils.Constants
@@ -35,7 +38,7 @@ fun AirQualityData(
     modifier: Modifier = Modifier,
     airViewModel: AirQualityViewModel
 ) {
-    val airQualityData by airViewModel.airQuality.observeAsState(initial = LoadingState.Loading)
+    val airQualityData by airViewModel.airQuality.observeAsState(initial = LoadingState.Empty)
     val airQualityRange = remember {
         mutableStateOf(Constants.EMPTY_STRING)
     }
@@ -48,7 +51,7 @@ fun AirQualityData(
         Column(modifier) {
             val text = AnnotatedString.Builder()
             text.apply {
-                pushStyle(SpanStyle(fontWeight = FontWeight.Medium, color = Color.Black))
+                pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
                 append(stringResource(R.string.air_quality_at_your_location))
                 pushStyle(SpanStyle(fontWeight = FontWeight.Bold, color = airQualityColor.value))
                 append(airQualityRange.value)
@@ -56,25 +59,26 @@ fun AirQualityData(
             }
             Text(
                 text = text.toAnnotatedString(),
-                style = TextStyle(fontSize = 16.sp),
+                style = TextStyle(fontSize = 16.sp, fontFamily = customFontFamily()),
                 modifier = modifier
                     .weight(3f)
                     .padding(top = 3.dp, start = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
             when (airQualityData) {
+                is LoadingState.Empty -> Text(
+                    text = stringResource(R.string.no_data_found),
+                    modifier
+                        .weight(3f)
+                        .align(Alignment.CenterHorizontally),
+                    style = TextStyle(fontSize = 13.sp)
+                )
+
                 is LoadingState.Loading -> {
-                    if (airQualityRange.value.isEmpty()) {
-                        Text(
-                            text = stringResource(R.string.no_data_found),
-                            modifier
-                                .weight(3f)
-                                .align(Alignment.CenterHorizontally),
-                            style = TextStyle(fontSize = 13.sp)
-                        )
-                    } else CircularProgressIndicator(
+                    CircularProgressIndicator(
                         modifier
                             .weight(3f)
+                            .size(25.dp)
                             .align(Alignment.CenterHorizontally)
                     )
                 }
@@ -93,7 +97,8 @@ fun AirQualityData(
                         items(progressData.size) {
                             QualityLevelIndicator(
                                 progressData[it],
-                                modifier.weight(3f)
+                                modifier.weight(3f),
+                                MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -102,7 +107,7 @@ fun AirQualityData(
                 is LoadingState.Error -> {
                     Text(
                         text = stringResource(R.string.unable_to_fetch_data_please_try_again_later),
-                        style = TextStyle(fontSize = 13.sp),
+                        style = TextStyle(fontSize = 13.sp, fontFamily = customFontFamily()),
                         modifier = modifier
                             .weight(3f)
                             .align(Alignment.CenterHorizontally)

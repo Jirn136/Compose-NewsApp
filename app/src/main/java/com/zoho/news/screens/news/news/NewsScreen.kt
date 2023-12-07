@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import com.zoho.news.utils.isNetworkAvailable
+import com.zoho.news.utils.toToast
 import com.zoho.weatherapp.R
 
 @Composable
@@ -29,7 +30,7 @@ fun NewsScreen(
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
-    if (!context.isNetworkAvailable()) stringResource(id = R.string.no_internet)
+    if (!context.isNetworkAvailable()) stringResource(id = R.string.no_internet).toToast(context)
     if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         PortraitNewsScreen(
             newsViewModel,
