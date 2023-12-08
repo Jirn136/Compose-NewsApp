@@ -215,7 +215,7 @@ fun NewsItem(
                     model = ImageRequest.Builder(context).data(news.imageUrl).crossfade(500)
                         .build(),
                     contentDescription = news.title,
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.FillHeight,
                     loading = {
                         CircularProgressIndicator(
                             modifier = Modifier
@@ -236,7 +236,11 @@ fun NewsItem(
                                 .fillMaxWidth()
                         )
                     },
-                    modifier = Modifier.fillMaxHeight(0.83f)
+                    modifier = Modifier
+                        .fillMaxHeight(0.83f)
+                        .clickable {
+                            clickedNews(news.url.toString())
+                        }
                 )
                 Box(
                     modifier = Modifier
