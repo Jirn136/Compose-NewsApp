@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WeatherApp</string>
+    <string name="app_name">News App</string>
     <string name="no_data_found">No data found</string>
     <string name="unable_to_fetch_data_please_try_again_later">Unable to fetch data, Please try again later.</string>
     <string name="search">Search…</string>
