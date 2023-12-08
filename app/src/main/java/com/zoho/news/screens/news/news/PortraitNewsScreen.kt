@@ -103,7 +103,9 @@ fun PortraitNewsScreen(
             shape = RoundedCornerShape(25.dp),
             textStyle = TextStyle(fontFamily = customFontFamily())
         )
-
-        NewsList(news = newsList.collectAsLazyPagingItems(), clickedNews = clickedNews)
+        val pagingNewsList = newsList.collectAsLazyPagingItems()
+        NewsList(news = pagingNewsList, clickedNews = clickedNews) {
+            pagingNewsList.refresh()
+        }
     }
 }

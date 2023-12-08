@@ -112,12 +112,14 @@ fun LandscapeNewsScreen(
                 shape = RoundedCornerShape(25.dp),
             )
         }
-
+        val pagingNewsList = newsList.collectAsLazyPagingItems()
         NewsList(
-            news = newsList.collectAsLazyPagingItems(),
+            news = pagingNewsList,
             clickedNews = clickedNews,
             isLandScape = true
-        )
+        ) {
+            pagingNewsList.refresh()
+        }
     }
 
 }

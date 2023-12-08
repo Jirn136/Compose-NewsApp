@@ -25,6 +25,7 @@ import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -68,7 +69,8 @@ import kotlin.random.Random
 fun NewsList(
     news: LazyPagingItems<News>,
     clickedNews: (String) -> Unit,
-    isLandScape: Boolean = false
+    isLandScape: Boolean = false,
+    performRetryClick: () -> Unit
 ) {
     val context = LocalContext.current
     LaunchedEffect(key1 = news.loadState) {
@@ -140,7 +142,7 @@ fun NewsList(
                                     .wrapContentSize(Alignment.Center)
                             )
 
-                            news.itemSnapshotList.isEmpty() -> EmptyView()
+                            news.itemSnapshotList.isEmpty() -> EmptyView(context, performRetryClick)
                         }
 
                     }
@@ -151,7 +153,7 @@ fun NewsList(
 }
 
 @Composable
-fun EmptyView() {
+fun EmptyView(context: Context, performRetryClick: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(modifier = Modifier.align(Alignment.Center)) {
             Text(
@@ -162,6 +164,20 @@ fun EmptyView() {
                     fontFamily = customFontFamily()
                 )
             )
+            OutlinedButton(onClick = {
+                if (!context.isNetworkAvailable()) context.getString(R.string.no_internet)
+                    .toToast(context)
+                else performRetryClick()
+            }, modifier = Modifier.padding(top = 5.dp)) {
+                Text(
+                    "Retry",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = customFontFamily()
+                    )
+                )
+            }
         }
     }
 }
